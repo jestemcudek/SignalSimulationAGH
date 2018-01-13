@@ -42,6 +42,7 @@ public class Robot {
         }
         for (Antena ant:antlist) {
             antenaList.add(Detector.measureSignal(this.x,this.y,ant));
+            count++;
         }
     }
 
@@ -49,7 +50,21 @@ public class Robot {
         //Przegladaj listy prev i antlist
         //Napisz funkcje ktora porownuje moce sygnalu
         //Jezeli najslabszy sygnal wzrosl, a pozostale nie obnizyly sie ponizej poziomu krytycznego zwroc true, w kazdym innym przypadku false
-        return true;
+        int changecount=0;
+        for(int i=0;i<3;i++){
+            if(prevAntList.get(i).getReceivedPowerSignal()<antenaList.get(i).getReceivedPowerSignal())
+                changecount++;
+            else if(prevAntList.get(i).getReceivedPowerSignal()>antenaList.get(i).getReceivedPowerSignal())
+                changecount--;
+            else
+                System.out.println("Bez zmian");
+        }
+        if(changecount>0) { //jeżeli odnotowano, że potencjalna zmiana położenia będzie lepsza, to zwracamy true, w pp zwracamy false
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     public boolean isYourLocationSafe(){

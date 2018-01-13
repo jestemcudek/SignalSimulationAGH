@@ -4,24 +4,34 @@ public class Antena {
     private int x;
     private int y;
     private String ID;
-    private int signalPower;
+    private int signalRange;
+    private double minWorkingSignal;
 
-    public Antena(int x,int y,int signalPower){
+    public Antena(int x,int y,int signalRange, double minWorkingSignal){
         this.x=x;
         this.y=y;
-        this.signalPower=signalPower;
-        this.ID="ANT"+x+y+signalPower;
+        this.signalRange=signalRange;
+        this.minWorkingSignal = minWorkingSignal;
+        this.ID="ANT"+x+y;
     }
 
-    public int getX() {
+    int getX() {
         return x;
     }
 
-    public int getY() {
+    int getY() {
         return y;
     }
 
-    public int getSignalPower() {
-        return signalPower;
+    int getSignalRange() {
+        return signalRange;
+    }
+
+    double getMinWorkingSignal() {
+        return minWorkingSignal;
+    }
+
+    String getID() {
+        return ID;
     }
 }
