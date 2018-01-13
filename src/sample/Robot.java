@@ -46,10 +46,11 @@ public class Robot {
         }
     }
 
-    public boolean isWorthToChangePosition(){
+    public ChangeParams isWorthToChangePosition(){
         //Przegladaj listy prev i antlist
         //Napisz funkcje ktora porownuje moce sygnalu
         //Jezeli najslabszy sygnal wzrosl, a pozostale nie obnizyly sie ponizej poziomu krytycznego zwroc true, w kazdym innym przypadku false
+        ChangeParams params = new ChangeParams();
         int changecount=0;
         for(int i=0;i<3;i++){
             if(prevAntList.get(i).getReceivedPowerSignal()<antenaList.get(i).getReceivedPowerSignal())
@@ -60,11 +61,13 @@ public class Robot {
                 System.out.println("Bez zmian");
         }
         if(changecount>0) { //jeżeli odnotowano, że potencjalna zmiana położenia będzie lepsza, to zwracamy true, w pp zwracamy false
-            return true;
+            params.isItWorth= true;
         }
         else {
-            return false;
+            params.isItWorth= false;
         }
+        params.gain=changecount;
+        return params;
     }
 
     public boolean isYourLocationSafe(){
