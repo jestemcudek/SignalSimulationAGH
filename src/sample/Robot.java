@@ -8,7 +8,7 @@ public class Robot {
     private int y;
     private int fuelTank;  //liczba kroków, które może przebyć robot
     private List<Signal> antenaList;
-    private List<Signal> prevAntList;
+    private List<Signal> prevAntList; //możliwe do usunięcia, do zastąpienia przez tmp przekazywana do funkcji isWorth
     private int count=0;
 
     public Robot(int x, int y, int tank){
@@ -45,6 +45,19 @@ public class Robot {
             count++;
         }
     }
+
+    private int findTheWeakest(List<Signal> antlist){
+        int result=0;
+        Signal tmp = antlist.get(0);
+        for(int i=1;i<antlist.size();i++){
+            if(antlist.get(i).getReceivedPowerSignal()<tmp.getReceivedPowerSignal()) {
+                tmp = antlist.get(i);
+                result=i;
+            }
+        }
+        return result;
+    }
+
 
     public ChangeParams isWorthToChangePosition(){
         //Przegladaj listy prev i antlist
