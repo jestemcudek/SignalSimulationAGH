@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Robot {
-    private int x;
-    private int y;
+    private double x;
+    private double y;
     private int fuelTank;  //liczba kroków, które może przebyć robot
     private List<Signal> antenaList;
     private List<Signal> prevAntList; //możliwe do usunięcia, do zastąpienia przez tmp przekazywana do funkcji isWorth
     private int count=0;
 
-    public Robot(int x, int y, int tank){
+    public Robot(double x, double y, int tank){
         this.x = x;
         this.y = y;
         this.fuelTank=tank;
@@ -19,7 +19,7 @@ public class Robot {
         this.prevAntList = new ArrayList<Signal>();
     }
 
-    public int getX() {
+    public double getX() {
         return x;
     }
 
@@ -27,7 +27,7 @@ public class Robot {
         return fuelTank;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 

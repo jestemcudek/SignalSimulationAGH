@@ -9,10 +9,10 @@
 
 <GridPane alignment="center" hgap="10" prefHeight="900" prefWidth="1600" vgap="10" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
 
-      <Canvas id="simCanvas" height="700" width="1600.0" />
-   <ButtonBar id="simButton" prefHeight="40.0" prefWidth="200.0" GridPane.rowIndex="1">
+      <Canvas fx:id="simCanvas" height="700" width="1600.0" />
+   <ButtonBar  prefHeight="40.0" prefWidth="200.0" GridPane.rowIndex="1">
      <buttons>
-       <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="338.0" text="Button" />
+       <Button fx:id="simButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="338.0" text="Button" onAction="#initizializeSimulation" />
      </buttons>
    </ButtonBar>
    <columnConstraints>
