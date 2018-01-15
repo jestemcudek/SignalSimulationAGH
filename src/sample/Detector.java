@@ -15,7 +15,7 @@ public class Detector {
         double diff_y = robot_y-ant_y;
 
         double distance = Math.sqrt(Math.pow(diff_x,2.0)+Math.pow(diff_y,2.0));
-        double signalPower = (ant.getSignalRange()-distance)/ant.getSignalRange();
+        double signalPower = (ant.getSignalRange()-distance)/ant.getSignalRange()*100;
         if(signalPower>=ant.getMinWorkingSignal())
             result.setSignalStrongEnough(true);
         else

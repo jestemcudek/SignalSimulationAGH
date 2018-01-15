@@ -3,8 +3,11 @@ package sample;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -15,6 +18,7 @@ public class Controller {
 
     private int amountOfAntenas =3;
     private List<Antena> antenaList = new ArrayList<>();
+    private Robot robot;
 
     @FXML
     private Canvas simCanvas;
@@ -22,21 +26,27 @@ public class Controller {
     @FXML
     private Button simButton;
 
+    @FXML
+    private GridPane gridPane;
 
+    @FXML
+    private Label simLabel;
 
     private GraphicsContext gc;
     private boolean hasStarted = false;
 
+    private Image robotimage = new Image("robot_symbol.png");
+    private Image antenaimage = new Image("signal_symbol.png");
+
 
     public void initizializeSimulation() {
-        //simButton.setDisable(true);
+        simButton.setDisable(true);
         Random random = new Random();
-        int fuel = random.nextInt(300)+1;
+        int fuel = random.nextInt(300)+50;
         double robot_x = random.nextDouble()*simCanvas.getWidth();
         double robot_y = random.nextDouble()*simCanvas.getHeight();
-        Robot robot = new Robot(robot_x,robot_y,fuel);
-        Image robotimage = new Image("robot_symbol.png");
-        Image antenaimage = new Image("signal_symbol.png");
+        robot = new Robot(robot_x,robot_y,fuel);
+        simLabel.setText("Paliwo: "+robot.getFuelTank());
         gc = simCanvas.getGraphicsContext2D();
         drawElement(robotimage, robot_x, robot_y, gc);
         List<Point> pointList = generatePoints(random);
@@ -44,10 +54,39 @@ public class Controller {
         for(int i=0;i<amountOfAntenas;i++){
             Point tmp = pointList.get(i);
             Antena ant = new Antena(tmp.x,tmp.y,reach, 20);
+            antenaList.add(ant);
             drawElement(antenaimage,tmp.x,tmp.y,gc);
         }
+        robot.listenToAntenas(antenaList);
+        System.out.println(robot.getAntenaList().size());
+        simulate();
+    }
 
+    public void simulate(){
+        while(!robot.isYourLocationSafe()||robot.getFuelTank()!=0){
+            robot.listenToAntenas(antenaList);
+            if(robot.isYourLocationSafe())
+                break;
+            double x = robot.getX();
+            double y = robot.getY();
+            robot.tryMakeToBetterPosition(antenaList);
+            gc.clearRect(x,y,32,32);
+            simLabel.setText("Paliwo: "+robot.getFuelTank());
 
+        }
+        if(robot.isYourLocationSafe()){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Sukces");
+            alert.setHeaderText(null);
+            alert.setContentText("Robot znalazł się w bezpiecznej lokalizacji");
+            alert.showAndWait();
+        }else if(robot.getFuelTank()==0){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Porażka");
+            alert.setHeaderText(null);
+            alert.setContentText("Robotowi nie udało się dotrzeć do robociego nieba");
+            alert.showAndWait();
+        }
     }
 
     private void drawElement(Image img, double x, double y, GraphicsContext gc){

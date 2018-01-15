@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.scene.control.Alert;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,51 +38,85 @@ public class Robot {
     }
 
     public void listenToAntenas(List<Antena> antlist){
-        if(count!=0) {
-            prevAntList = antenaList;
-            antenaList.clear();
-        }
         for (Antena ant:antlist) {
             antenaList.add(Detector.measureSignal(this.x,this.y,ant));
-            count++;
         }
     }
 
-    private int findTheWeakest(List<Signal> antlist){
-        int result=0;
-        Signal tmp = antlist.get(0);
-        for(int i=1;i<antlist.size();i++){
-            if(antlist.get(i).getReceivedPowerSignal()<tmp.getReceivedPowerSignal()) {
-                tmp = antlist.get(i);
-                result=i;
-            }
+    private List<Signal> listenToAntenas(double tmp_x, double tmp_y,List<Antena> antenaList){
+        List<Signal> result = new ArrayList<>();
+        for (Antena ant:antenaList) {
+            result.add(Detector.measureSignal(tmp_x,tmp_y,ant));
         }
         return result;
     }
 
+    private int findTheWeakestSignal(List<Signal> antlist){
+        int result=0;
+        Signal tmp = antlist.get(0);
+        if(antlist.size()>1) {
+            for (int i = 1; i < antlist.size(); i++) {
+                if (antlist.get(i).getReceivedPowerSignal() < tmp.getReceivedPowerSignal()) {
+                    tmp = antlist.get(i);
+                    result = i;
+                }
+            }
+            System.out.println(result);
+            return result;
+        }else
+            return 0;
+    }
 
-    public ChangeParams isWorthToChangePosition(){
-        //Przegladaj listy prev i antlist
-        //Napisz funkcje ktora porownuje moce sygnalu
-        //Jezeli najslabszy sygnal wzrosl, a pozostale nie obnizyly sie ponizej poziomu krytycznego zwroc true, w kazdym innym przypadku false
-        ChangeParams params = new ChangeParams();
-        int changecount=0;
-        for(int i=0;i<3;i++){
-            if(prevAntList.get(i).getReceivedPowerSignal()<antenaList.get(i).getReceivedPowerSignal())
-                changecount++;
-            else if(prevAntList.get(i).getReceivedPowerSignal()>antenaList.get(i).getReceivedPowerSignal())
-                changecount--;
-            else
-                System.out.println("Bez zmian");
+    public void tryMakeToBetterPosition(List<Antena> antList){
+        if(antenaList.isEmpty()){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText(null);
+            alert.setContentText("Nie nastąpiło wstępne nasłuchiwanie anten");
+            alert.showAndWait();
+            return;
         }
-        if(changecount>0) { //jeżeli odnotowano, że potencjalna zmiana położenia będzie lepsza, to zwracamy true, w pp zwracamy false
-            params.isItWorth= true;
+        if(antenaList.size()>0){
+            int idx = findTheWeakestSignal(antenaList);
+            switch (lookForNextMove(idx,antList)){
+                case West: makeAMove(Directions.West); break;
+                case North: makeAMove(Directions.North); break;
+                case East: makeAMove(Directions.East); break;
+                case South: makeAMove(Directions.South); break;
+            }
         }
-        else {
-            params.isItWorth= false;
+        else makeAMove(Directions.randomDirection()); //robot pójdzie w losowym kierunku "pójdzie przed siebie"
+
+
+    }
+
+    private Directions lookForNextMove(int lowestSignal,List<Antena> antenaList){
+        if(isWorthToChangePosition(lowestSignal,listenToAntenas(this.x,this.y-1,antenaList)))
+            return Directions.North;
+        else if (isWorthToChangePosition(lowestSignal,listenToAntenas(this.x+1,this.y,antenaList)))
+            return Directions.East;
+        else if(isWorthToChangePosition(lowestSignal,listenToAntenas(this.x,this.y+1,antenaList)))
+            return Directions.South;
+        else return Directions.West;
+
+    }
+
+    private void makeAMove(Directions direction){
+        switch (direction){
+            case East: this.x++; break;
+            case North: this.y--; break;
+            case West: this.x--; break;
+            case South: this.y++; break;
+            default: System.out.println("Nie można wykonać kroku");
         }
-        params.gain=changecount;
-        return params;
+        this.fuelTank--;
+    }
+
+    private boolean isWorthToChangePosition(int idx,List<Signal> possibleSignalList){
+       if(possibleSignalList.get(idx).getReceivedPowerSignal()>antenaList.get(idx).getReceivedPowerSignal())
+        return true;
+        else
+            return false;
     }
 
     public boolean isYourLocationSafe(){
