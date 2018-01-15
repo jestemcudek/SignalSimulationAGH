@@ -59,11 +59,13 @@ public class Controller {
         }
         robot.listenToAntenas(antenaList);
         System.out.println(robot.getAntenaList().size());
+        System.out.println(robot.getFuelTank());
         simulate();
+        simButton.setDisable(false);
     }
 
     public void simulate(){
-        while(!robot.isYourLocationSafe()||robot.getFuelTank()!=0){
+        while(!robot.isYourLocationSafe()&&robot.getFuelTank()!=0){
             robot.listenToAntenas(antenaList);
             if(robot.isYourLocationSafe())
                 break;
@@ -72,6 +74,7 @@ public class Controller {
             robot.tryMakeToBetterPosition(antenaList);
             gc.clearRect(x,y,32,32);
             simLabel.setText("Paliwo: "+robot.getFuelTank());
+            drawElement(robotimage,robot.getX(),robot.getY(),gc);
 
         }
         if(robot.isYourLocationSafe()){
