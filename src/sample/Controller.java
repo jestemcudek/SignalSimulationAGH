@@ -112,11 +112,17 @@ public class Controller {
     }
 
     private List<Point> generatePoints(Random random){
+        double rangeMinX = 200;
+        double rangeMaxX = 800;
+        double rangeMinY = 200;
+        double rangeMaxY = 500;
         List<Point> result = new ArrayList<>();
         for(int i=0;i<3;i++){
             Point tmp = new Point();
-            tmp.x = random.nextDouble()*simCanvas.getWidth();
-            tmp.y = random.nextDouble()*simCanvas.getHeight();
+           // tmp.x = random.nextDouble()*simCanvas.getWidth();
+           // tmp.y = random.nextDouble()*simCanvas.getHeight();
+            tmp.x = rangeMinX + (rangeMaxX - rangeMinX) * random.nextDouble();
+            tmp.y = rangeMinY + (rangeMaxY - rangeMinY) * random.nextDouble();
             result.add(tmp);
         }
         return result;
