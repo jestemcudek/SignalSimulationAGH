@@ -6,9 +6,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +59,7 @@ public class Controller {
             Antena ant = new Antena(tmp.x,tmp.y,reach, 20);
             antenaList.add(ant);
             drawElement(antenaimage,tmp.x,tmp.y,gc);
+            drawCircle(tmp.x, tmp.y,reach, gc);
         }
         robot.listenToAntenas(antenaList);
         System.out.println(robot.getAntenaList().size());
@@ -92,8 +96,16 @@ public class Controller {
         }
     }
 
+    //TODO wyświetlanie paliwa - ilość pozostałych kroków
+
     private void drawElement(Image img, double x, double y, GraphicsContext gc){
         gc.drawImage(img,x,y,32.0,32.0);
+    }
+
+    private void drawCircle(double x, double y, double signalRange, GraphicsContext gc ){
+        gc.setStroke(Color.BLUE);
+        gc.setLineWidth(3);
+        gc.strokeOval(x, y, signalRange, signalRange);
     }
 
     private List<Point> generatePoints(Random random){
