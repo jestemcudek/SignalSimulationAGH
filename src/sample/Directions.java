@@ -9,7 +9,7 @@ import java.util.Random;
  * Created by Damian on 15.01.2018.
  */
 public enum Directions {
-    South,North,East,West;
+    South,North,East,West,Stay;
 
     private static final List<Directions> VALUES =
             Collections.unmodifiableList(Arrays.asList(values()));

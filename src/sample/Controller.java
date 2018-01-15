@@ -46,7 +46,7 @@ public class Controller {
         simButton.setDisable(true);
         Random random = new Random();
         int fuel = random.nextInt(300)+50;
-        double robot_x = random.nextDouble()*simCanvas.getWidth();
+        double robot_x = random.nextDouble()*simCanvas.getWidth()-50;
         double robot_y = random.nextDouble()*simCanvas.getHeight();
         robot = new Robot(robot_x,robot_y,fuel);
         simLabel.setText("Paliwo: "+robot.getFuelTank());
@@ -56,7 +56,7 @@ public class Controller {
         int reach = findLongestDistance(pointList);
         for(int i=0;i<amountOfAntenas;i++){
             Point tmp = pointList.get(i);
-            Antena ant = new Antena(tmp.x,tmp.y,reach, 20);
+            Antena ant = new Antena(tmp.x,tmp.y,reach, 0);
             antenaList.add(ant);
             drawElement(antenaimage,tmp.x,tmp.y,gc);
             drawCircle(tmp.x, tmp.y,reach, gc);
@@ -66,19 +66,22 @@ public class Controller {
         System.out.println(robot.getFuelTank());
         simulate();
         simButton.setDisable(false);
+        robot=null;
+        antenaList.clear();
+        gc.clearRect(0,0,simCanvas.getWidth(),simCanvas.getHeight());
     }
 
     public void simulate(){
-        while(!robot.isYourLocationSafe()&&robot.getFuelTank()!=0){
-            robot.listenToAntenas(antenaList);
-            if(robot.isYourLocationSafe())
-                break;
+        boolean foundSafePlace = robot.isYourLocationSafe();
+        while(!foundSafePlace&&robot.getFuelTank()>0){
             double x = robot.getX();
             double y = robot.getY();
             robot.tryMakeToBetterPosition(antenaList);
             gc.clearRect(x,y,32,32);
             simLabel.setText("Paliwo: "+robot.getFuelTank());
             drawElement(robotimage,robot.getX(),robot.getY(),gc);
+            robot.listenToAntenas(antenaList);
+            foundSafePlace=robot.isYourLocationSafe();
 
         }
         if(robot.isYourLocationSafe()){
@@ -99,7 +102,7 @@ public class Controller {
     //TODO wyświetlanie paliwa - ilość pozostałych kroków
 
     private void drawElement(Image img, double x, double y, GraphicsContext gc){
-        gc.drawImage(img,x-16,y-16,32.0,32.0);
+        gc.drawImage(img,x,y,32.0,32.0);
     }
 
     private void drawCircle(double x, double y, double signalRange, GraphicsContext gc ){
@@ -112,11 +115,17 @@ public class Controller {
     }
 
     private List<Point> generatePoints(Random random){
+        double rangeMinX = 200;
+        double rangeMaxX = 800;
+        double rangeMinY = 200;
+        double rangeMaxY = 500;
         List<Point> result = new ArrayList<>();
         for(int i=0;i<3;i++){
             Point tmp = new Point();
-            tmp.x = random.nextDouble()*simCanvas.getWidth();
-            tmp.y = random.nextDouble()*simCanvas.getHeight();
+            //tmp.x = random.nextDouble()*simCanvas.getWidth();
+            //tmp.y = random.nextDouble()*simCanvas.getHeight();
+            tmp.x = rangeMinX + (rangeMaxX - rangeMinX) * random.nextDouble();
+            tmp.y = rangeMinY + (rangeMaxY - rangeMinY) * random.nextDouble();
             result.add(tmp);
         }
         return result;
@@ -124,13 +133,18 @@ public class Controller {
 
     private int findLongestDistance(List<Point> pointList){
      int result=0;
-     double tmp=0.0;
+     double tmp=0;
+     double tmp2=0;
      for(int i=0;i<amountOfAntenas;i++){
          for(int j=i+1;j<amountOfAntenas;j++){
-             tmp = measureDistance(pointList.get(i),pointList.get(j));
+             tmp2 = measureDistance(pointList.get(i),pointList.get(j));
+             if(tmp<tmp2)tmp=tmp2;
+             System.out.println(tmp);
          }
      }
      result = (int)tmp;
+        System.out.println(result);
+
      return result;
     }
 

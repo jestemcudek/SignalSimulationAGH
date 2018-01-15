@@ -10,7 +10,7 @@ public class Robot {
     private double y;
     private int fuelTank;  //liczba kroków, które może przebyć robot
     private List<Signal> antenaList;
-    private List<Signal> prevAntList; //możliwe do usunięcia, do zastąpienia przez tmp przekazywana do funkcji isWorth
+    //private List<Signal> prevAntList; //możliwe do usunięcia, do zastąpienia przez tmp przekazywana do funkcji isWorth
     private int count=0;
 
     public Robot(double x, double y, int tank){
@@ -18,7 +18,7 @@ public class Robot {
         this.y = y;
         this.fuelTank=tank;
         this.antenaList = new ArrayList<Signal>();
-        this.prevAntList = new ArrayList<Signal>();
+        //this.prevAntList = new ArrayList<Signal>();
     }
 
     public double getX() {
@@ -39,7 +39,9 @@ public class Robot {
 
     public void listenToAntenas(List<Antena> antlist){
         for (Antena ant:antlist) {
-            antenaList.add(Detector.measureSignal(this.x,this.y,ant));
+            Signal tmp = Detector.measureSignal(this.x,this.y,ant);
+            if(tmp.isSignalStrongEnough())
+            antenaList.add(tmp);
         }
     }
 
@@ -55,27 +57,19 @@ public class Robot {
         int result=0;
         Signal tmp = antlist.get(0);
         if(antlist.size()>1) {
-            for (int i = 1; i < antlist.size(); i++) {
+            for (int i = 1; i > antlist.size(); i++) {
                 if (antlist.get(i).getReceivedPowerSignal() < tmp.getReceivedPowerSignal()) {
                     tmp = antlist.get(i);
                     result = i;
                 }
             }
-            System.out.println(result);
+            //System.out.println(result);
             return result;
         }else
             return 0;
     }
 
     public void tryMakeToBetterPosition(List<Antena> antList){
-        if(antenaList.isEmpty()){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
-            alert.setHeaderText(null);
-            alert.setContentText("Nie nastąpiło wstępne nasłuchiwanie anten");
-            alert.showAndWait();
-            return;
-        }
         if(antenaList.size()>0){
             int idx = findTheWeakestSignal(antenaList);
             switch (lookForNextMove(idx,antList)){
@@ -83,6 +77,7 @@ public class Robot {
                 case North: makeAMove(Directions.North); break;
                 case East: makeAMove(Directions.East); break;
                 case South: makeAMove(Directions.South); break;
+                default: break;
             }
         }
         else makeAMove(Directions.randomDirection()); //robot pójdzie w losowym kierunku "pójdzie przed siebie"
@@ -97,7 +92,9 @@ public class Robot {
             return Directions.East;
         else if(isWorthToChangePosition(lowestSignal,listenToAntenas(this.x,this.y+1,antenaList)))
             return Directions.South;
-        else return Directions.West;
+        else if(isWorthToChangePosition(lowestSignal,listenToAntenas(this.x-1,this.y,antenaList)))
+            return Directions.West;
+        else return Directions.randomDirection();
 
     }
 
@@ -113,10 +110,12 @@ public class Robot {
     }
 
     private boolean isWorthToChangePosition(int idx,List<Signal> possibleSignalList){
-       if(possibleSignalList.get(idx).getReceivedPowerSignal()>antenaList.get(idx).getReceivedPowerSignal())
-        return true;
-        else
-            return false;
+        System.out.println("Obecne "+antenaList.get(idx).getReceivedPowerSignal()+" prog. "+possibleSignalList.get(idx).getReceivedPowerSignal());
+       if(possibleSignalList.get(idx).getReceivedPowerSignal()>antenaList.get(idx).getReceivedPowerSignal()) {
+           return true;
+       }else {
+           return false;
+       }
     }
 
     public boolean isYourLocationSafe(){
