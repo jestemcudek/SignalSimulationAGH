@@ -99,13 +99,16 @@ public class Controller {
     //TODO wyświetlanie paliwa - ilość pozostałych kroków
 
     private void drawElement(Image img, double x, double y, GraphicsContext gc){
-        gc.drawImage(img,x,y,32.0,32.0);
+        gc.drawImage(img,x-16,y-16,32.0,32.0);
     }
 
     private void drawCircle(double x, double y, double signalRange, GraphicsContext gc ){
+        double circleWidth = 2*signalRange;
+        double currentX = x - circleWidth/2;
+        double currentY = y - circleWidth/2;
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(3);
-        gc.strokeOval(x, y, signalRange, signalRange);
+        gc.strokeOval(currentX, currentY, circleWidth, circleWidth);
     }
 
     private List<Point> generatePoints(Random random){
