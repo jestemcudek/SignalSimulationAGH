@@ -9,8 +9,8 @@ public class Detector {
     public static Signal measureSignal(double robot_x, double robot_y, Antena ant){
         Signal result = new Signal();
         result.setAntID(ant.getID());
-        int ant_x = ant.getX();
-        int ant_y = ant.getY();
+        double ant_x = ant.getX();
+        double ant_y = ant.getY();
         double diff_x = robot_x-ant_x;
         double diff_y = robot_y-ant_y;
 

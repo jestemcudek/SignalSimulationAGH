@@ -1,25 +1,25 @@
 package sample;
 
 public class Antena {
-    private int x;
-    private int y;
+    private double x;
+    private double y;
     private String ID;
     private int signalRange;
     private double minWorkingSignal;
 
-    public Antena(int x,int y,int signalRange, double minWorkingSignal){
+    public Antena(double x,double y,int signalRange, double minWorkingSignal){
         this.x=x;
         this.y=y;
         this.signalRange=signalRange;
         this.minWorkingSignal = minWorkingSignal;
-        this.ID="ANT"+x+y;
+        this.ID="ANT"+(int)x+(int)y;
     }
 
-    int getX() {
+    double getX() {
         return x;
     }
 
-    int getY() {
+    double getY() {
         return y;
     }
 
