@@ -134,7 +134,7 @@ public class Controller {
     private int findLongestDistance(List<Point> pointList){
      int result=0;
      double tmp=0;
-     double tmp2=0;
+     double tmp2=0.0;
      for(int i=0;i<amountOfAntenas;i++){
          for(int j=i+1;j<amountOfAntenas;j++){
              tmp2 = measureDistance(pointList.get(i),pointList.get(j));

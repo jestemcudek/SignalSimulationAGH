@@ -10,7 +10,7 @@ public class Robot {
     private double y;
     private int fuelTank;  //liczba kroków, które może przebyć robot
     private List<Signal> antenaList;
-    //private List<Signal> prevAntList; //możliwe do usunięcia, do zastąpienia przez tmp przekazywana do funkcji isWorth
+
     private int count=0;
 
     public Robot(double x, double y, int tank){
