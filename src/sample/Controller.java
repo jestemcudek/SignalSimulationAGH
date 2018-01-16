@@ -1,6 +1,8 @@
 package sample;
 
 import javafx.fxml.FXML;
+import javafx.print.PrinterJob;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
@@ -59,7 +61,16 @@ public class Controller {
             Antena ant = new Antena(tmp.x,tmp.y,reach, 20);
             antenaList.add(ant);
             drawElement(antenaimage,tmp.x,tmp.y,gc);
-            drawCircle(tmp.x, tmp.y,reach, gc);
+            drawCircle(tmp.x, tmp.y, reach, gc);
+            /*if(i==1 || i==2) {
+                drawCircle(tmp.x, tmp.y, reach, gc);
+            }
+            if(i==2){
+                int reach2 = findLongestDistanceForPoint(pointList,0);
+                Point tmp2 = pointList.get(0);
+                drawCircle(tmp2.x ,tmp2.y , reach2, gc);
+            }*/
+            System.out.println("Antena numer "+i+"  "+tmp.x+"  "+tmp.y++);
         }
         robot.listenToAntenas(antenaList);
         System.out.println(robot.getAntenaList().size());
@@ -95,8 +106,6 @@ public class Controller {
             alert.showAndWait();
         }
     }
-
-    //TODO wyświetlanie paliwa - ilość pozostałych kroków
 
     private void drawElement(Image img, double x, double y, GraphicsContext gc){
         gc.drawImage(img,x-16,y-16,32.0,32.0);
@@ -139,6 +148,24 @@ public class Controller {
      result = (int)tmp;
      return result;
     }
+
+   /* private int findLongestDistanceForPoint(List<Point> pointList, int number){
+        int result=0;
+        double tmp=0.0;
+        double tmp2=0.0;
+        Point point = pointList.get(number);
+
+        for(int i=0;i<amountOfAntenas-1;i++){
+           if(number==i)continue;
+            tmp = measureDistance(point,pointList.get(i));
+            tmp2 = tmp;
+            if (tmp>tmp2){
+                result = (int) tmp;
+
+            }
+        }
+       return result;
+    }*/
 
     private double measureDistance(Point a, Point b){
         double diff_x = b.x-a.x;

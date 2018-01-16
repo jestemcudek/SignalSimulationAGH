@@ -104,9 +104,9 @@ public class Robot {
     private void makeAMove(Directions direction){
         switch (direction){
             case East: this.x++; break;
-            case North: this.y++; break;
+            case North: this.y--; break;
             case West: this.x--; break;
-            case South: this.y--; break;
+            case South: this.y++; break;
             default: System.out.println("Nie można wykonać kroku");
         }
         this.fuelTank--;
